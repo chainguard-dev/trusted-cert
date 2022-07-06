@@ -1,0 +1,61 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Image digest update
+
+on:
+  workflow_dispatch:
+  schedule:
+    # HPE-images ran on 0 0 * * * lets run this one hour after
+    - cron: "0 1 * * *"
+
+jobs:
+  image-update:
+    name: Image digest update
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup G Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: Print gcloud info
+        run: 'gcloud info'
+
+      - name: Docker creds
+        run: gcloud auth configure-docker
+
+      - id: 'get-credentials'
+        uses: 'google-github-actions/get-gke-credentials@v0'
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          location: ${{ secrets.CLUSTER_LOCATION }}
+
+      - name: install TKN CLI
+        run: |
+          curl -sfLo tkn https://github.com/tektoncd/cli/releases/download/v0.24.0/tkn_0.24.0_Linux_x86_64.tar.gz
+          chmod u+x ./tkn
+
+      - name: connect to bastion
+        if: ${{ env.BASTION_ACCESS == 'true' }}
+        run: |
+          gcloud compute ssh --zone ${{ env.BASTION_ZONE }} ${{ env.BASTION_NAME}} --tunnel-through-iap --project ${{ env.PROJECT_ID }} -- -N -D 8118 &
+          echo "HTTPS_PROXY=socks5://localhost:8118" >> $GITHUB_ENV
+          sleep 30
+
+      - name: Run Tekton Build
+        run: | 
+          kubectl apply -f tekton/common/
+          kubectl apply -f tekton/go/
+          tkn pipeline start trusted-cert-build-pipeline --use-pipelinerun trusted-cert-pipeline-run
