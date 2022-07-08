@@ -4,6 +4,7 @@
 name: Image digest update
 
 on:
+  pull_request:
   workflow_dispatch:
   schedule:
     # HPE-images ran on 0 0 * * * lets run this one hour after
