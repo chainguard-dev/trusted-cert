@@ -46,7 +46,7 @@ spec:
     ImagePullSecrets:
       - name: registry-credentials
     automountServiceAccountToken: false
-  serviceAccountName: tekton-sa
+  serviceAccountName: trustcert-sa
   workspaces:
     - name: source
       persistentVolumeClaim:

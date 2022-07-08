@@ -11,7 +11,7 @@ graph ER {
 
     { rank=same HPE_Images_Repo TrustCert }
     { rank=same GO_BUILD_GCR GO_BUILDER }
-     HPE_Images_Repo -- HPE_Images;
+    HPE_Images_Repo -- HPE_Images;
     HPE_Images -- GO_BUILD_GCR;
     Digest_Bot -- GO_BUILD_GCR;
     Digest_Bot -- GO_BUILDER;
