@@ -19,9 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
-      pull-requests: write
-      id-token: write
+      contents: read
 
     steps:
       - name: Authenticate to Google Cloud
@@ -53,8 +51,10 @@ jobs:
 
       - name: connect to bastion
         if: ${{ env.BASTION_ACCESS == 'true' }}
+        with:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         run: |
-          gcloud compute ssh --zone ${{ env.BASTION_ZONE }} ${{ env.BASTION_NAME}} --tunnel-through-iap --project ${{ env.PROJECT_ID }} -- -N -D 8118 &
+          gcloud compute ssh --zone ${{ secrets.BASTION_ZONE }} ${{ secrets.BASTION_NAME}} --tunnel-through-iap --project ${{ env.GCP_PROJECT_ID }} -- -N -D 8118 &
           echo "HTTPS_PROXY=socks5://localhost:8118" >> $GITHUB_ENV
           sleep 30
 
