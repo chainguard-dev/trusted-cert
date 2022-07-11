@@ -6,6 +6,9 @@ name: Tekon Nightly Build
 on:
   pull_request:
   workflow_dispatch:
+  pull_request_target:
+    branches:
+      - tekton
   schedule:
     # HPE-images ran on 0 0 * * * lets run this one hour after
     - cron: "0 1 * * *"

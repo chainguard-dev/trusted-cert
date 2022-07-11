@@ -5,6 +5,9 @@ name: Digest Bot Image digest update
 
 on:
   pull_request:
+  pull_request_target:
+    branches:
+      - tekton
   workflow_dispatch:
   schedule:
     # HPE-images ran on 0 0 * * * lets run this one hour after
