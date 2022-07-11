@@ -1,7 +1,7 @@
 # Copyright 2022 Chainguard, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-name: Image digest update
+name: Digest Bot Image digest update
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ on:
 
 jobs:
   image-update:
-    name: Image digest update
+    name: Digest Bot Image digest update
     runs-on: ubuntu-latest
 
     permissions:
