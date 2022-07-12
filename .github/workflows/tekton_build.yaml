@@ -9,7 +9,7 @@ on:
   pull_request_target:
   schedule:
     # HPE-images ran on 0 0 * * * lets run this one hour after
-    - cron: "0 1 * * *"
+    - cron: "0 2 * * *"
 
 jobs:
   image-update:
@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: 'read'
+      id-token: 'write'
 
     steps:
       - name: Authenticate to Google Cloud
