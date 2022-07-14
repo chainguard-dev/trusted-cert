@@ -100,6 +100,6 @@ kubectl create serviceaccount "${KSA_NAME}" --namespace "${NAMESPACE}" || true
 
 kubectl annotate serviceaccount "${KSA_NAME}" \
     --namespace "${NAMESPACE}" \
-    iam.gke.io/gcp-service-account="${SERVICE_ACCOUNT}"
+    iam.gke.io/gcp-service-account="${SERVICE_ACCOUNT}" || true
 
 
