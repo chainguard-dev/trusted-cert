@@ -41,7 +41,7 @@ for var in "${mandatory[@]}"; do
 done
 
 echo "Deleting secret"
-kubectl delete secret registry-credentials
+kubectl delete secret registry-credentials || true
 
 echo "Updating Secret"
 kubectl create secret docker-registry registry-credentials \
