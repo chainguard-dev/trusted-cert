@@ -41,6 +41,10 @@ jobs:
       - name: Print gcloud info
         run: 'gcloud info'
 
+      - name: Docker Credentials
+        shell: bash
+        run: gcloud auth configure-docker
+
       - uses: chainguard-dev/actions/digesta-bot@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
