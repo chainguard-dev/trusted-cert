@@ -92,6 +92,11 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --role="roles/container.admin" \
   --member="serviceAccount:${SERVICE_ACCOUNT}"
 
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+  --project="${PROJECT_ID}" \
+  --role="roles/compute.viewer" \
+  --member="serviceAccount:${SERVICE_ACCOUNT}"
+
 gcloud iam service-accounts add-iam-policy-binding "${SERVICE_ACCOUNT}" \
     --role roles/iam.workloadIdentityUser \
     --member "serviceAccount:${PROJECT_ID}.svc.id.goog[${NAMESPACE}/${KSA_NAME}]"
@@ -101,5 +106,3 @@ kubectl create serviceaccount "${KSA_NAME}" --namespace "${NAMESPACE}" || true
 kubectl annotate serviceaccount "${KSA_NAME}" \
     --namespace "${NAMESPACE}" \
     iam.gke.io/gcp-service-account="${SERVICE_ACCOUNT}" || true
-
-

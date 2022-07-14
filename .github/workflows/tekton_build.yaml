@@ -60,9 +60,11 @@ jobs:
       - name: Connect to bastion
         shell: bash
         run: |
-          gcloud compute ssh --zone ${{ secrets.BASTION_ZONE }} ${{ secrets.BASTION_NAME}} --tunnel-through-iap --project ${{ secrets.GCP_PROJECT_ID }} -- -N -D 8118 &
+          gcloud compute ssh --force-key-file-overwrite --zone ${{ secrets.BASTION_ZONE }} ${{ secrets.BASTION_NAME}} --tunnel-through-iap --project ${{ secrets.GCP_PROJECT_ID }} -- -N -D 8118 &
           echo "HTTPS_PROXY=socks5://localhost:8118" >> $GITHUB_ENV
           sleep 30
+          kubectl cluster-info
+          kubectl get nodes 
 
       - name: Run Tekton Build
         shell: bash
