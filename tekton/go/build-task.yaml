@@ -39,7 +39,7 @@ spec:
       description: Where the git clones the repo to.
   steps:
     - name: go-vet
-      image: gcr.io/oci-tekton-service-dev/go-build@sha256:cbd0be55e546204d5375f81a587df9006c9def6067dc55cdc7c907781911c3fb
+      image: gcr.io/oci-tekton-service-dev/go-build:latest@sha256:cbd0be55e546204d5375f81a587df9006c9def6067dc55cdc7c907781911c3fb
       env:
         - name: GOMODCACHE
           value: $(workspaces.source.path)/source/gomod
@@ -53,7 +53,7 @@ spec:
         go vet -mod="vendor" ./cmd/... ./internal/...
 
     - name: go-lint
-      image: gcr.io/oci-tekton-service-dev/go-build@sha256:cbd0be55e546204d5375f81a587df9006c9def6067dc55cdc7c907781911c3fb
+      image: gcr.io/oci-tekton-service-dev/go-build:latest@sha256:cbd0be55e546204d5375f81a587df9006c9def6067dc55cdc7c907781911c3fb
       env:
         - name: GOMODCACHE
           value: $(workspaces.source.path)/source/gomod
@@ -66,7 +66,7 @@ spec:
         ./util/golint -set_exit_status ./cmd/... ./internal/...
 
     - name: go-build
-      image: gcr.io/oci-tekton-service-dev/go-build@sha256:cbd0be55e546204d5375f81a587df9006c9def6067dc55cdc7c907781911c3fb
+      image: gcr.io/oci-tekton-service-dev/go-build:latest@sha256:cbd0be55e546204d5375f81a587df9006c9def6067dc55cdc7c907781911c3fb
       env:
         - name: GOMODCACHE
           value: $(workspaces.source.path)/source/gomod
