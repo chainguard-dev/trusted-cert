@@ -72,7 +72,10 @@ jobs:
         shell: bash
         run: | 
           export HTTPS_PROXY=${{ env.HTTPS_PROXY }}
+          # refresh the registry gcloud token in the cluster
+          GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} ./tekton/token.sh
           
           kubectl apply -f tekton/common/
           kubectl apply -f tekton/go/
+          
           ./tkn pipeline start trusted-cert-build-pipeline --use-pipelinerun trusted-cert-pipeline-run

@@ -31,7 +31,7 @@ set +x
 
 declare -a mandatory
 mandatory=(
-  PROJECT_ID
+  GCP_PROJECT_ID
   POOL_NAME
   PROVIDER_NAME
   LOCATION
@@ -40,8 +40,6 @@ mandatory=(
   SERVICE_ACCOUNT
   PROJECT_NUMBER
 )
-
-source .env
 
 for var in "${mandatory[@]}"; do
   if [[ -z "${!var:-}" ]]; then
@@ -52,14 +50,14 @@ done
 
 if ! (gcloud iam workload-identity-pools describe "${POOL_NAME}" --location="${LOCATION}"); then
   gcloud iam workload-identity-pools create "${POOL_NAME}" \
-    --project="${PROJECT_ID}" \
+    --project="${GCP_PROJECT_ID}" \
     --location="${LOCATION}" \
     --display-name="Github Actions Pool"
 fi
 
 if ! (gcloud iam workload-identity-pools providers describe "${PROVIDER_NAME}" --location="${LOCATION}" --workload-identity-pool="${POOL_NAME}"); then
   gcloud iam workload-identity-pools providers create-oidc "${PROVIDER_NAME}" \
-  --project="${PROJECT_ID}" \
+  --project="${GCP_PROJECT_ID}" \
   --location="${LOCATION}" \
   --workload-identity-pool="${POOL_NAME}" \
   --display-name="Trusted Cert Images" \
@@ -76,30 +74,30 @@ fi
 # Adding binding is idempotent.
 # For Workload Identity
 gcloud iam service-accounts add-iam-policy-binding "${SERVICE_ACCOUNT}" \
-  --project="${PROJECT_ID}" \
+  --project="${GCP_PROJECT_ID}" \
   --role="roles/iam.workloadIdentityUser" \
   --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/${LOCATION}/workloadIdentityPools/${POOL_NAME}/attribute.repository/${REPO}"
 
 # For service account impersonation, used for managing groups.
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-  --project="${PROJECT_ID}" \
+gcloud projects add-iam-policy-binding "${GCP_PROJECT_ID}" \
+  --project="${GCP_PROJECT_ID}" \
   --role="roles/storage.admin" \
   --member="serviceAccount:${SERVICE_ACCOUNT}"
 
 # For pushing to GKE Cluster
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-  --project="${PROJECT_ID}" \
+gcloud projects add-iam-policy-binding "${GCP_PROJECT_ID}" \
+  --project="${GCP_PROJECT_ID}" \
   --role="roles/container.admin" \
   --member="serviceAccount:${SERVICE_ACCOUNT}"
 
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-  --project="${PROJECT_ID}" \
+gcloud projects add-iam-policy-binding "${GCP_PROJECT_ID}" \
+  --project="${GCP_PROJECT_ID}" \
   --role="roles/compute.admin" \
   --member="serviceAccount:${SERVICE_ACCOUNT}"
 
 
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-  --project="${PROJECT_ID}" \
+gcloud projects add-iam-policy-binding "${GCP_PROJECT_ID}" \
+  --project="${GCP_PROJECT_ID}" \
   --role="roles/iap.tunnelResourceAccessor" \
   --member="serviceAccount:${SERVICE_ACCOUNT}"
 
@@ -108,7 +106,7 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 
 gcloud iam service-accounts add-iam-policy-binding "${SERVICE_ACCOUNT}" \
     --role roles/iam.workloadIdentityUser \
-    --member "serviceAccount:${PROJECT_ID}.svc.id.goog[${NAMESPACE}/${KSA_NAME}]"
+    --member "serviceAccount:${GCP_PROJECT_ID}.svc.id.goog[${NAMESPACE}/${KSA_NAME}]"
 
 kubectl create serviceaccount "${KSA_NAME}" --namespace "${NAMESPACE}" || true
 
