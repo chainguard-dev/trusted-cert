@@ -24,15 +24,18 @@ jobs:
       id-token: write
 
     steps:
+      - name: 'Checkout'
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3.0.2
+
       - name: Authenticate to Google Cloud
-        uses: 'google-github-actions/auth@v0'
+        uses: google-github-actions/auth@ceee102ec2387dd9e844e01b530ccd4ec87ce955
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: Setup G Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+        uses: google-github-actions/setup-gcloud@877d4953d2c70a0ba7ef3290ae968eb24af233bb
 
       - name: Print gcloud info
         run: 'gcloud info'
@@ -43,18 +46,18 @@ jobs:
 
       - name: GKE Credentials
         id: 'get-credentials'
-        uses: 'google-github-actions/get-gke-credentials@v0'
+        uses: google-github-actions/get-gke-credentials@054fdb05e32039f72764f03e69e6acb20caa6f56
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
           location: ${{ secrets.CLUSTER_LOCATION }}
 
-      - name: install TKN CLI
+      - name: Install TKN CLI
         shell: bash
         run: |
           curl -sfLo tkn https://github.com/tektoncd/cli/releases/download/v0.24.0/tkn_0.24.0_Linux_x86_64.tar.gz
           chmod +x ./tkn
 
-      - name: connect to bastion
+      - name: Connect to bastion
         shell: bash
         run: |
           gcloud compute ssh --zone ${{ secrets.BASTION_ZONE }} ${{ secrets.BASTION_NAME}} --tunnel-through-iap --project ${{ secrets.GCP_PROJECT_ID }} -- -N -D 8118 &
