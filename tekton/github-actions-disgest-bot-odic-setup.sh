@@ -94,8 +94,17 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --project="${PROJECT_ID}" \
-  --role="roles/compute.viewer" \
+  --role="roles/compute.admin" \
   --member="serviceAccount:${SERVICE_ACCOUNT}"
+
+
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+  --project="${PROJECT_ID}" \
+  --role="roles/iap.tunnelResourceAccessor" \
+  --member="serviceAccount:${SERVICE_ACCOUNT}"
+
+
+
 
 gcloud iam service-accounts add-iam-policy-binding "${SERVICE_ACCOUNT}" \
     --role roles/iam.workloadIdentityUser \
