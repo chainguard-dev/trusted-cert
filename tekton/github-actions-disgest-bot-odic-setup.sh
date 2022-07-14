@@ -101,8 +101,10 @@ gcloud projects add-iam-policy-binding "${GCP_PROJECT_ID}" \
   --role="roles/iap.tunnelResourceAccessor" \
   --member="serviceAccount:${SERVICE_ACCOUNT}"
 
-
-
+gcloud projects add-iam-policy-binding "${GCP_PROJECT_ID}" \
+  --project="${GCP_PROJECT_ID}" \
+  --role="roles/iam.serviceAccountTokenCreator" \
+  --member="serviceAccount:${SERVICE_ACCOUNT}"
 
 gcloud iam service-accounts add-iam-policy-binding "${SERVICE_ACCOUNT}" \
     --role roles/iam.workloadIdentityUser \
