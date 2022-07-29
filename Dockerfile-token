@@ -21,7 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-FROM gcr.io/oci-tekton-service-dev/alpine-base:latest@sha256:9f5082574b455c495b51c362d25c166a458c26320fcc9cc91c12c8fe21d5b028
+FROM gcr.io/oci-tekton-service-dev/alpine-base:latest@sha256:0252877b7bbe6a4624d64f5a1d175e65631fb32c8d7fe787cd99a9cba8930b49
 
 WORKDIR /
 
